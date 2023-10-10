@@ -2,25 +2,23 @@ import torch
 import sys
 from transformers import AutoTokenizer, AutoModelForMaskedLM
 
-device = torch.device(
-        "cuda"
-        if torch.cuda.is_available()
-        else (
-            "mps"
-            if sys.platform == "darwin" and torch.backends.mps.is_available()
-            else "cpu"
-        )
-    )
+
 
 tokenizer = AutoTokenizer.from_pretrained("./bert/bert-base-historic-english-cased")
-model = AutoModelForMaskedLM.from_pretrained("./bert/bert-base-historic-english-cased")#.to(device)
+model = AutoModelForMaskedLM.from_pretrained("./bert/bert-base-historic-english-cased")
 
-def get_bert_feature(text, word2ph):
+def get_bert_feature(text, word2ph, device=None):
     with torch.no_grad():
+        if device:
+            model_new = model.to(device)
+        else:
+            model_new = model
         inputs = tokenizer(text, return_tensors='pt')
         for i in inputs:
-            inputs[i] = inputs[i]#.to(device)
-        res = model(**inputs, output_hidden_states=True)
+            if device:
+                inputs[i] = inputs[i].to(device)
+
+        res = model_new(**inputs, output_hidden_states=True)
         res = torch.cat(res['hidden_states'][-3:-2], -1)[0].cpu()
 
     #assert len(word2ph) == len(text)+2
