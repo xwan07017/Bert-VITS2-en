@@ -50,7 +50,7 @@ def get_text(text, language_str, hps):
     del word2ph
     assert bert.shape[-1] == len(phone), phone
 
-    if language_str == "ZH":
+    if language_str == "ZH"or language_str == "EN":
         bert = bert
         ja_bert = torch.zeros(768, len(phone))
     elif language_str == "JP":
@@ -174,7 +174,7 @@ if __name__ == "__main__":
 
     speaker_ids = hps.data.spk2id
     speakers = list(speaker_ids.keys())
-    languages = ["ZH", "JP"]
+    languages = ["ZH", "JP", "EN"]
     with gr.Blocks() as app:
         with gr.Row():
             with gr.Column():

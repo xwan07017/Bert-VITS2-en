@@ -31,7 +31,7 @@ def get_text(text, language_str, hps):
     del word2ph
     assert bert.shape[-1] == len(phone), phone
 
-    if language_str == "ZH":
+    if language_str == "ZH" or language_str == "EN":
         bert = bert
         ja_bert = torch.zeros(768, len(phone))
     elif language_str == "JA":
@@ -141,7 +141,7 @@ def main():
             return "Missing Parameter"
         if fmt not in ("mp3", "wav", "ogg"):
             return "Invalid Format"
-        if language not in ("JA", "ZH"):
+        if language not in ("JA", "ZH", "EN"):
             return "Invalid language"
     except:
         return "Invalid Parameter"
