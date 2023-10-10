@@ -161,6 +161,7 @@ def run():
     net_d = DDP(net_d, device_ids=[rank], find_unused_parameters=True)
     if net_dur_disc is not None:
         net_dur_disc = DDP(net_dur_disc, device_ids=[rank], find_unused_parameters=True)
+    dur_resume_lr = None
     try:
         if net_dur_disc is not None:
             _, _, dur_resume_lr, epoch_str = utils.load_checkpoint(
@@ -208,7 +209,7 @@ def run():
         optim_d, gamma=hps.train.lr_decay, last_epoch=epoch_str - 2
     )
     if net_dur_disc is not None:
-        if not optim_dur_disc.param_groups[0].get("initial_lr"):
+        if not optim_dur_disc.param_groups[0].get("initial_lr") and dur_resume_lr:
             optim_dur_disc.param_groups[0]["initial_lr"] = dur_resume_lr
         scheduler_dur_disc = torch.optim.lr_scheduler.ExponentialLR(
             optim_dur_disc, gamma=hps.train.lr_decay, last_epoch=epoch_str - 2
