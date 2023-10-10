@@ -31,10 +31,10 @@ def get_text(text, language_str, hps):
     del word2ph
     assert bert.shape[-1] == len(phone), phone
 
-    if language_str == "ZH" or language_str == "EN":
+    if language_str == "ZH":
         bert = bert
         ja_bert = torch.zeros(768, len(phone))
-    elif language_str == "JA":
+    elif language_str == "JA"  or language_str == "EN":
         ja_bert = bert
         bert = torch.zeros(1024, len(phone))
     else:

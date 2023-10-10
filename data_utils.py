@@ -152,10 +152,10 @@ class TextAudioSpeakerLoader(torch.utils.data.Dataset):
             torch.save(bert, bert_path)
             assert bert.shape[-1] == len(phone), phone
 
-        if language_str == "ZH" or language_str == "EN":
+        if language_str == "ZH":
             bert = bert
             ja_bert = torch.zeros(768, len(phone))
-        elif language_str == "JP":
+        elif language_str == "JP"  or language_str == "EN":
             ja_bert = bert
             bert = torch.zeros(1024, len(phone))
         else:
